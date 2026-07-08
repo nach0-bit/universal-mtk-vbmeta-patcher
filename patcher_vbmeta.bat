@@ -1,4 +1,4 @@
-@echo off
+ @echo off
 setlocal enabledelayedexpansion
 title Universal MTK VBMeta Patcher - Open Source Tool
 
@@ -65,6 +65,29 @@ if not exist "%AVB_SCRIPT%" (
 echo [OK] fastboot, %PY_CMD% and %AVB_SCRIPT% found.
 echo.
 
+echo =======================================================
+echo   WAITING FOR DEVICE IN FASTBOOT MODE
+echo =======================================================
+echo Connect your MediaTek device in FASTBOOT mode now...
+fastboot wait-for-device >nul 2>&1
+echo [SUCCESS] Device detected.
+echo.
+
+:: ===========================================================
+:: STEP 0.5: HARDWARE VALIDATION (MTK ONLY)
+:: ===========================================================
+echo [INFO] Validating processor architecture...
+fastboot getvar hardware 2>&1 | findstr /i "mt" >nul 2>&1
+if errorlevel 1 (
+    color 0C
+    echo.
+    echo [ERROR] This device does not appear to use a MediaTek processor.
+    echo This patcher is EXCLUSIVELY designed for MTK platforms.
+    goto error
+)
+echo [OK] MediaTek platform verified.
+echo.
+
 :: ===========================================================
 :: STEP 1: BUILD THE PATCHED VBMETA IMAGE
 :: ===========================================================
@@ -104,49 +127,47 @@ if /i not "%CONFIRM%"=="YES" (
 )
 echo.
 
-echo =======================================================
-echo   WAITING FOR DEVICE IN FASTBOOT MODE
-echo =======================================================
-echo Connect your MediaTek device in FASTBOOT mode now...
-fastboot wait-for-device >nul 2>&1
-echo [SUCCESS] Device detected.
-echo.
-
 :: ===========================================================
-:: STEP 2.5: DETECT A/B SLOTS
+:: STEP 3: FLASH VBMETA PARTITIONS (WITH DYNAMIC A/B CHECK)
 :: ===========================================================
-set "SLOT_ARG="
 fastboot getvar slot-count 2>&1 | findstr /i "slot-count: 2" >nul 2>&1
 if not errorlevel 1 (
-    set "SLOT_ARG=--slot all"
-    echo [INFO] A/B device detected - vbmeta will be flashed to BOTH slots.
+    echo [INFO] A/B device detected - flashing to both slots...
+    echo [2/6] Flashing %IMG_NAME% to vbmeta...
+    fastboot flash vbmeta_a "%IMG_NAME%"
+    fastboot flash vbmeta_b "%IMG_NAME%"
+    if errorlevel 1 goto flash_failed
+
+    echo [3/6] Flashing %IMG_NAME% to vbmeta_system...
+    fastboot flash vbmeta_system_a "%IMG_NAME%" 2>nul
+    fastboot flash vbmeta_system_b "%IMG_NAME%" 2>nul
+
+    echo [4/6] Flashing %IMG_NAME% to vbmeta_vendor...
+    fastboot flash vbmeta_vendor_a "%IMG_NAME%" 2>nul
+    fastboot flash vbmeta_vendor_b "%IMG_NAME%" 2>nul
 ) else (
-    echo [INFO] Single-slot device - flashing without --slot.
+    echo [INFO] Single-slot device detected...
+    echo [2/6] Flashing %IMG_NAME% to vbmeta...
+    fastboot flash vbmeta "%IMG_NAME%"
+    if errorlevel 1 goto flash_failed
+
+    echo [3/6] Flashing %IMG_NAME% to vbmeta_system...
+    fastboot flash vbmeta_system "%IMG_NAME%" 2>nul
+
+    echo [4/6] Flashing %IMG_NAME% to vbmeta_vendor...
+    fastboot flash vbmeta_vendor "%IMG_NAME%" 2>nul
 )
 echo.
+goto next_steps
 
-:: ===========================================================
-:: STEP 3: FLASH VBMETA PARTITIONS
-:: ===========================================================
-echo [2/6] Flashing %IMG_NAME% to vbmeta (required)...
-fastboot %SLOT_ARG% flash vbmeta "%IMG_NAME%"
-if errorlevel 1 (
-    color 0C
-    echo.
-    echo [ERROR] Flashing vbmeta failed - stopping here on purpose,
-    echo so metadata/userdata are NOT touched on a half-patched device.
-    goto error
-)
-
-echo [3/6] Flashing %IMG_NAME% to vbmeta_system (optional)...
-fastboot %SLOT_ARG% flash vbmeta_system "%IMG_NAME%" 2>nul
-if errorlevel 1 echo [INFO] vbmeta_system not present on this device - skipped.
-
-echo [4/6] Flashing %IMG_NAME% to vbmeta_vendor (optional)...
-fastboot %SLOT_ARG% flash vbmeta_vendor "%IMG_NAME%" 2>nul
-if errorlevel 1 echo [INFO] vbmeta_vendor not present on this device - skipped.
+:flash_failed
+color 0C
 echo.
+echo [ERROR] Flashing vbmeta failed - stopping here on purpose,
+echo so metadata/userdata are NOT touched on a half-patched device.
+goto error
 
+:next_steps
 :: ===========================================================
 :: STEP 4: METADATA + USERDATA WIPE
 :: ===========================================================
