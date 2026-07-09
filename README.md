@@ -56,8 +56,8 @@ Both automated tools process the device layout through a structured execution lo
    ```bash
    python mtk_vbmeta_patcher.py
 4.Confirm user checks by passing strict YES validations on screen when prompted.
-⚠️ Disclaimer
+## ⚠️ Disclaimer
 Warning: This utility executes advanced partitions updates, low-level system wipes, and structural resets (fastboot -w). The software is provided "as-is". I am not responsible for soft-bricks, hardware malfunctions, dead memory blocks, or unexpected user data destruction. Always backup vital user storage units before triggering compilation loops.
-🤝 Contributing & Feedback
+## 🤝 Contributing & Feedback
 This project is 100% open-source and powered by the modding community. Pull requests, issue trackers, and hardware validation compatibility reports are always highly encouraged!
 If this automated dual-suite saved your MediaTek device from a bootloop or simplified your custom ROM setup, please take a brief second to drop a 🌟 star on the repository to boost project discovery!
