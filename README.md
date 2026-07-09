@@ -1,53 +1,63 @@
-# Universal MTK VBMeta Patcher & Root Helper
+ # Universal MTK VBMeta Patcher & Root Helper
 
-An open-source, automated script designed to streamline the process of disabling Android Verified Boot (AVB) on modern **MediaTek (MTK)** devices. This tool prepares your device for rooting (APatch, Magisk) or flashing GSIs/Custom ROMs without facing bootloops caused by verified boot restrictions.
+An open-source, highly automated tool suite designed to seamlessly disable **Android Verified Boot (AVB)** and assist with root deployment on modern MediaTek (MTK) devices. 
 
-By utilizing Google's official `avbtool`, the script dynamically compiles a generic blank/modified `vbmeta` image aligned with standard MTK partition sizes (4KB padding) and flashes it across all critical verification points in a single click.
-
----
-
-## 🚀 Features
-* **Universal MTK Compatibility:** Works on almost any modern MediaTek device requiring AVB disabling.
-* **Automated Generation:** Uses `avbtool` to dynamically create a `vbmeta_mod.img` with **Flag 2 disabled** and forced **4KB padding** (required by MTK preloaders).
-* **Multi-Partition Flashing:** Automatically covers the standard triple-partition verification scheme (`vbmeta`, `vbmeta_system`, and `vbmeta_vendor`).
-* **Fail-Safe Checks:** Verifies code compilation before running Fastboot commands to ensure device safety.
-* **Automation:** Handles the mandatory post-flash factory reset and metadata wipe seamlessly.
+To provide the most optimal user experience, this repository offers two native implementation flavors:
+1. **`mtk_vbmeta_patcher.bat`** – A pure, zero-dependency native script optimized for Windows users.
+2. **`mtk_vbmeta_patcher.py`** – A clean, robust Python 3 implementation tailored for Linux, macOS, and advanced terminal setups.
 
 ---
 
-## 📋 Prerequisites
+## 🚀 Key Features
 
-1. **Unlocked Bootloader:** Your device's bootloader must be fully unlocked.
-2. **Python Installed:** Python 3.x must be installed on your computer and added to your **System PATH**.
-3. **USB Drivers:** MediaTek / Fastboot drivers must be properly installed on Windows.
-
----
-
-## 📂 Repository Structure
-
-Ensure the release folder maintains the following file structure for the automated script to execute correctly:
-📂 Universal-MTK-Patcher
- ├── 📄 patcher_vbmeta.bat <- The main execution script
- ├── 📄 avbtool.py         <- Python dependency script
- ├── 📄 fastboot.exe       <- Android platform tool binary
- ├── 📄 AdbWinApi.dll      <- Windows ADB dependency
- └── 📄 AdbWinUsbApi.dll   <- Windows USB dependency
+* **Dual-Architecture Deployment:** Choose between a lightweight Windows Batch configuration or a completely cross-platform Python architecture.
+* **Dynamic Slot Detection (A/B):** Automatically queries device properties via Fastboot variable tables (`slot-count`) and flashes both active slots simultaneously using `--slot all` when a dual structure is found.
+* **[BONUS] Automated Boot Flashing:** Detects if a `boot.img` (stock or Magisk/APatch patched) is present in the working directory and offers a safe, one-click prompt to flash it automatically before rebooting.
+* **Granular Crash Prevention:** Evaluates platform critical paths before pushing binaries. Main `vbmeta` failures safely halt execution instantly, shielding crypto blocks and metadata segments from asymmetric half-patched states.
+* **Isolated Log Buffering:** Pipe operations output dynamically to `avbtool_log.txt` and echo back real-time dump blocks directly to the console if internal compilers trigger an unhandled fault.
 
 ---
 
-## 🛠️ How To Use
+## 📋 Requirements
 
-1. **Download** the latest release package and extract it to a single directory.
-2. Boot your MediaTek phone into **Fastboot Mode** (usually Power + Volume Down) and connect it to your PC.
-3. Double-click **`patcher_vbmeta.bat`** to start the automated process.
-4. The script will generate the universal image, wait for your device, flash the required partitions, wipe metadata/userdata to prevent encryption bootloops, and reboot.
-5. Once your device boots, you can safely proceed to patch your kernel/boot image using **APatch** or **Magisk**.
+Before executing either patcher variant, ensure the following steps are covered:
+
+1. **Unlocked Bootloader:** Your MediaTek device's bootloader must already be fully OEM-unlocked.
+2. **Fastboot Environment:** Android Platform Tools (`fastboot`) must be installed and properly configured inside your system's global environment variables (`PATH`).
+3. **Python 3.x:** Installed globally on your machine (required by `avbtool.py` on all systems, and to run the `.py` script on Linux/macOS).
+4. **AVB Tool Core:** The target executable `avbtool.py` must be manually placed inside the exact same directory alongside these scripts.
 
 ---
 
-## 🤝 Contributing & Feedback
-As this is an open-source tool aiming for universal MTK support, community feedback is highly appreciated. If your specific device requires additional partitions (e.g., `vbmeta_boot`), feel free to fork this repository, submit a pull request, or open an issue.
+## 🛠️ Execution Pipeline (The 6-Step Array)
 
-*Disclaimer: Modifying system partitions carries risks. Always back up your important data before flashing. The developers are not responsible for bricked devices.*
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Both automated tools process the device layout through a structured execution loop:
+
+* **`[0/6]` Dependency Verification:** Scans system binaries for `fastboot` accessibility and localized file states.
+* **`[1/6]` Target Image Synthesis:** Automatically patches and builds a custom 4KB aligned `vbmeta_mod.img` file with structural AVB flags hardcoded to value `2` (Verification Overridden).
+* **`[2/6]` Core Flash Cycle:** Pushes payload directly into the main `vbmeta` partition block.
+* **`[3/6] & [4/6]` Component Override:** Broadly targets peripheral image arrays (`vbmeta_system` and `vbmeta_vendor`) and bypasses them gracefully if non-existent.
+* **`[5/6]` Cryptographic Metadata Purge:** Erases block indexes or reformats system `metadata` layouts directly into ext4 maps.
+* **`[6/6]` Full Structural Reset:** Triggers an authentic userdata cycle allocation (`fastboot -w`) to finalize data partition un-encryption and triggers an automatic device restart.
+
+---
+
+## 💻 Usage Instructions
+
+### On Windows (Recommended Fast-Track)
+1. Drop `avbtool.py` and your optional target `boot.img` inside the script folder.
+2. Boot your device into **Fastboot Mode** and link it via USB.
+3. Simply double-click **`mtk_vbmeta_patcher.bat`** (No terminal navigation required).
+
+### On Linux / macOS (Or Advanced Windows Shells)
+1. Open up your native terminal emulator inside the downloaded repository directory.
+2. Set your device into **Fastboot Mode** and verify connectivity.
+3. Run the cross-platform script using Python 3:
+   ```bash
+   python mtk_vbmeta_patcher.py
+4.Confirm user checks by passing strict YES validations on screen when prompted.
+⚠️ Disclaimer
+Warning: This utility executes advanced partitions updates, low-level system wipes, and structural resets (fastboot -w). The software is provided "as-is". I am not responsible for soft-bricks, hardware malfunctions, dead memory blocks, or unexpected user data destruction. Always backup vital user storage units before triggering compilation loops.
+🤝 Contributing & Feedback
+This project is 100% open-source and powered by the modding community. Pull requests, issue trackers, and hardware validation compatibility reports are always highly encouraged!
+If this automated dual-suite saved your MediaTek device from a bootloop or simplified your custom ROM setup, please take a brief second to drop a 🌟 star on the repository to boost project discovery!
