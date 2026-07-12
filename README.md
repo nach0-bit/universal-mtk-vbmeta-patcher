@@ -29,7 +29,7 @@ This tool prepares your device for rooting (APatch, Magisk) or flashing Custom R
 4. Connect your device to your PC in **Fastboot / Bootloader mode**.
 5. Run the script (e.g., via terminal or double-clicking the executable):
    ```bash
-   python patcher.py
+   python mtk_vbmeta_patcher.py
    ```
 6. Sit back and watch! The tool will automatically patch the image and **flash it directly to your phone**.
 7. Once finished, reboot your device and enjoy your unlocked system!
