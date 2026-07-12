@@ -44,5 +44,5 @@ Need help, want to report a bug, or just want to chat with other MTK modders? Jo
 *I am not responsible for bricked devices, dead SD cards, thermonuclear war, or you getting fired because the alarm app failed. Please do some research if you have any concerns about features included in this tool before using it. YOU are choosing to make these modifications.*
 
 ---
-**Developed with 💻 by N.dev ([nachit08899](https://github.com/nach0-bit))**
+**Developed with 💻 by N.dev ([nach0-bit](https://github.com/nach0-bit))**
 
