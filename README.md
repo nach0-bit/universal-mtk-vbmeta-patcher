@@ -30,7 +30,7 @@ Due to limitations in the Windows command line regarding complex conditional log
 * USB debugging enabled and device connected.
 
 ## 🛠️ Usage
-1. Clone this repository or download the latest **v3.1.2** release.
+1. Clone this repository or download the latest **v3.1.0** release.
 2. Extract the files to a local directory.
 3. *(Optional)* Place your patched `boot.img` (via APatch or Magisk) in the same folder if you want the tool to flash root automatically.
 4. Connect your device to your PC and boot into **Fastboot / Bootloader mode**.
