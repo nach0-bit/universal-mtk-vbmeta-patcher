@@ -24,6 +24,16 @@ import subprocess
 import sys
 
 # ------------------------------------------------------------------
+# Dependency Auto-Installer
+# ------------------------------------------------------------------
+try:
+    import cryptography
+except ImportError:
+    print("Missing 'cryptography' module. Installing automatically, please wait a moment...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "cryptography"])
+    import cryptography
+
+# ------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------
 IMG_NAME = "vbmeta_mod.img"
@@ -138,9 +148,6 @@ def build_patched_image():
         except OSError:
             pass
         print("-" * 51)
-        if "ModuleNotFoundError" in log_text or "ImportError" in log_text:
-            warn("avbtool needs a Python package that isn't installed.")
-            warn("Try: pip install cryptography")
         sys.exit(1)
 
     success(f"{IMG_NAME} generated.\n")
