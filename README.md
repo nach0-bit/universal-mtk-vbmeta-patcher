@@ -1,6 +1,6 @@
 # Universal MTK VBMeta Patcher & Root Helper 🛠️
 
-[![Version](https://img.shields.io/badge/version-3.1.0 hot fix 1-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)]()
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20Group-2CA5E0?style=flat&logo=telegram)](https://t.me/VbmetaUniversalMTK)
 
 An open-source, fully automated script designed to streamline the process of disabling **Android Verified Boot (AVB)** on modern **MediaTek (MTK)** devices. 
