@@ -38,3 +38,45 @@ Due to limitations in the Windows command line regarding complex conditional log
    ```bash
    python mtk_vbmeta_patcher.py
    
+---
+   
+## ⚠️ Disclaimer
+
+**USE AT YOUR OWN RISK.** 
+
+Modifying device partitions, disabling Android Verified Boot (AVB), and rooting carry inherent risks. While this tool is heavily tested and designed to be as safe as possible, every device and firmware version is different. 
+
+* **The authors and contributors of this project are NOT responsible** for bricked devices, dead SD cards, lost data, bootloops, voided warranties, or thermonuclear war. 
+* Please ensure you understand what `fastboot` and `vbmeta` do before using this script. 
+* **Always have a backup** of your stock firmware (scatter file/ROM) ready to flash via SP Flash Tool or Fastboot in case something goes wrong. 
+
+By using this tool, you acknowledge that you are solely responsible for any modifications made to your device.
+
+---
+
+## 📄 License
+
+This project is open-source and distributed under the **MIT License**.
+
+```text
+MIT License
+
+Copyright (c) 2026 nach0-bit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
